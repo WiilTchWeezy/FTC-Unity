@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class Characther : MonoBehaviour
 {
+    public AnimationClip clip;
 
     SpriteRenderer Sprite;
-    Animator Anim;
+    Animation Anim;
     // Use this for initialization
     void Start()
     {
         Sprite = GetComponentInChildren<SpriteRenderer>();
-        Anim = GetComponentInChildren<Animator>();
+        Anim = gameObject.GetComponent<Animation>();
     }
 
     // Update is called once per frame
@@ -21,7 +22,7 @@ public class Characther : MonoBehaviour
         if (Input.touchCount > 0)
         {
             touch = Input.GetTouch(0);
-            Anim.SetBool("Hit", true);
+            Anim.Play("CharactherHit");
             if (touch.position.x < Screen.width / 2)
             {
                 gameObject.transform.position = new Vector3((float)-1.31, (float)-2.597116, (float)-1);
@@ -32,7 +33,22 @@ public class Characther : MonoBehaviour
                 gameObject.transform.position = new Vector3((float)1.31, (float)-2.597116, (float)-1);
                 Sprite.flipX = true;
             }
-            Anim.SetBool("Hit", false);
+        }
+
+        if (Input.GetButtonDown("Fire1"))
+        {
+            Anim.clip = clip;
+            Anim.Play();
+            if (Input.mousePosition.x < Screen.width / 2)
+            {
+                gameObject.transform.position = new Vector3((float)-1.31, (float)-2.597116, (float)-1);
+                Sprite.flipX = false;
+            }
+            else if (Input.mousePosition.x > Screen.width / 2)
+            {
+                gameObject.transform.position = new Vector3((float)1.31, (float)-2.597116, (float)-1);
+                Sprite.flipX = true;
+            }
         }
     }
 }
