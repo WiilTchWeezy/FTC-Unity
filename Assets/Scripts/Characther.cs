@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class Characther : MonoBehaviour
 {
-
+    public const int RIGHT = 1;
+    public const int LEFT = 0;
+    public int Side { get; set; }
     SpriteRenderer Sprite;
     Animator Anim;
     // Use this for initialization
@@ -21,31 +23,24 @@ public class Characther : MonoBehaviour
         if (Input.touchCount > 0)
         {
             touch = Input.GetTouch(0);
+            Anim.SetFloat("Hitting", 1f);
             if (touch.position.x < Screen.width / 2)
-            {
-                gameObject.transform.position = new Vector3((float)-1.31, (float)-2.597116, (float)-1);
-                Sprite.flipX = false;
-            }
+                GoLeft();
             else if (touch.position.x > Screen.width / 2)
-            {
-                gameObject.transform.position = new Vector3((float)1.31, (float)-2.597116, (float)-1);
-                Sprite.flipX = true;
-            }
+                GoRight();
+        }
+        else
+        {
+            Anim.SetFloat("Hitting", -1f);
         }
 
         if (Input.GetButtonDown("Fire1"))
         {
             Anim.SetFloat("Hitting", 1f);
             if (Input.mousePosition.x < Screen.width / 2)
-            {
-                gameObject.transform.position = new Vector3((float)-1.31, (float)-2.597116, (float)-1);
-                Sprite.flipX = false;
-            }
+                GoLeft();
             else if (Input.mousePosition.x > Screen.width / 2)
-            {
-                gameObject.transform.position = new Vector3((float)1.31, (float)-2.597116, (float)-1);
-                Sprite.flipX = true;
-            }
+                GoRight();
         }
         else
         {
@@ -53,4 +48,17 @@ public class Characther : MonoBehaviour
         }
     }
 
+    public void GoLeft()
+    {
+        gameObject.transform.position = new Vector3((float)-1.31, (float)-2.597116, (float)-1);
+        Sprite.flipX = false;
+        Side = LEFT;
+    }
+
+    public void GoRight()
+    {
+        gameObject.transform.position = new Vector3((float)1.31, (float)-2.597116, (float)-1);
+        Sprite.flipX = true;
+        Side = RIGHT;
+    }
 }
