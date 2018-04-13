@@ -11,8 +11,11 @@ public class Characther : MonoBehaviour
     Animator Anim;
 
     public GameObject Barrel;
+    public GameObject BarrelEnemyRight;
+    public GameObject BarrelEnemyLeft;
 
     private List<GameObject> Barrels;
+    private bool _lastIsAEnemy = false;
 
     // Use this for initialization
     void Start()
@@ -79,16 +82,63 @@ public class Characther : MonoBehaviour
         else if (Input.mousePosition.x > Screen.width / 2)
             GoRight();
         AnimateBarrel();
+        AddNewBarrel();
     }
 
     private void InitiateBarrels()
     {
         float y = -2.597116f;
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 10; i++)
         {
-            Barrels.Add(Instantiate(Barrel, new Vector3(0f, y, (float)-1), Quaternion.identity));
+            Barrels.Add(Instantiate(SelectBarrel(i), new Vector3(0f, y, (float)-1), Quaternion.identity));
             y = y + 1.28f;
         }
+    }
+
+    private void AddNewBarrel()
+    {
+        Barrels.Add(Instantiate(SelectBarrel(), new Vector3(0f, Barrels.Count * 1.28f, (float)-1), Quaternion.identity));
+    }
+
+    private GameObject SelectBarrel(int index = -1)
+    {
+        if (index == 0 || index == 1)
+            return Barrel;
+        if (_lastIsAEnemy)
+        {
+            _lastIsAEnemy = false;
+            return Barrel;
+        }
+        var ramdomNumber = Random.Range(0, 4);
+        GameObject barrel = null;
+        switch (ramdomNumber)
+        {
+            case 0:
+                barrel = Barrel;
+                _lastIsAEnemy = false;
+                break;
+            case 1:
+                barrel = BarrelEnemyRight;
+                _lastIsAEnemy = true;
+                break;
+            case 2:
+                barrel = BarrelEnemyLeft;
+                _lastIsAEnemy = true;
+                break;
+            case 3:
+                barrel = BarrelEnemyLeft;
+                _lastIsAEnemy = true;
+                break;
+            case 4:
+                barrel = BarrelEnemyRight;
+                _lastIsAEnemy = true;
+                break;
+            default:
+                barrel = Barrel;
+                _lastIsAEnemy = false;
+                break;
+        }
+        return barrel;
     }
 
     private void AnimateBarrel()
@@ -105,6 +155,9 @@ public class Characther : MonoBehaviour
             {
                 barrelScrpit.AnimRight();
             }
+            Barrels.Remove(lastBarrel);
+            foreach (var item in Barrels)
+                item.transform.position = new Vector3(item.transform.position.x, item.transform.position.y - 1.28f);
         }
     }
 }
