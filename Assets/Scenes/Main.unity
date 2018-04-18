@@ -531,9 +531,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Barrel: {fileID: 1613391266323964, guid: 1468c52700b0ce3458338500eacaa789, type: 2}
-  BarrelEnemyRight: {fileID: 1509874309663630, guid: 3f29765ce7c62a04e9e0429865cf0a30,
+  BarrelEnemyRight: {fileID: 1788575726342096, guid: 09cd248c75ba3b247a1eb4eb31d3826f,
     type: 2}
-  BarrelEnemyLeft: {fileID: 1236516075015266, guid: 9c0d960c8f3bd094abd09cd5d5f18fdf,
+  BarrelEnemyLeft: {fileID: 1788575726342096, guid: 09cd248c75ba3b247a1eb4eb31d3826f,
     type: 2}
 --- !u!1 &1559022960
 GameObject:
