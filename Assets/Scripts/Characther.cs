@@ -97,7 +97,7 @@ public class Characther : MonoBehaviour
 
     private void AddNewBarrel()
     {
-        Barrels.Add(Instantiate(SelectBarrel(), new Vector3(0f, Barrels.Count * 1.28f, (float)-1), Quaternion.identity));
+        Barrels.Add(Instantiate(SelectBarrel(), new Vector3(0f, (Barrels.Count - 2) * 1.28f, (float)-1f), Quaternion.identity));
     }
 
     private GameObject SelectBarrel(int index = -1)
