@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Characther : MonoBehaviour
 {
@@ -83,6 +84,8 @@ public class Characther : MonoBehaviour
             GoRight();
         AnimateBarrel();
         AddNewBarrel();
+        if (CheckEnemy(Barrels[0]))
+            Die();
     }
 
     private void InitiateBarrels()
@@ -159,5 +162,20 @@ public class Characther : MonoBehaviour
             foreach (var item in Barrels)
                 item.transform.position = new Vector3(item.transform.position.x, item.transform.position.y - 1.28f);
         }
+    }
+
+    private bool CheckEnemy(GameObject gameObject)
+    {
+        if (gameObject.CompareTag("EnemyRight") && Side == RIGHT)
+            return true;
+        else if (gameObject.CompareTag("EnemyLeft") && Side == LEFT)
+            return true;
+        else
+            return false;
+    }
+
+    private void Die()
+    {
+        SceneManager.LoadScene(0);
     }
 }
