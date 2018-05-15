@@ -533,7 +533,7 @@ MonoBehaviour:
   Barrel: {fileID: 1613391266323964, guid: 1468c52700b0ce3458338500eacaa789, type: 2}
   BarrelEnemyRight: {fileID: 1788575726342096, guid: 09cd248c75ba3b247a1eb4eb31d3826f,
     type: 2}
-  BarrelEnemyLeft: {fileID: 1788575726342096, guid: 09cd248c75ba3b247a1eb4eb31d3826f,
+  BarrelEnemyLeft: {fileID: 1456510852539684, guid: 5cd79173d473e0c4d934ceabfd487778,
     type: 2}
 --- !u!1 &1559022960
 GameObject:
