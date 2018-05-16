@@ -93,14 +93,29 @@ public class Characther : MonoBehaviour
         float y = -2.597116f;
         for (int i = 0; i < 10; i++)
         {
-            Barrels.Add(Instantiate(SelectBarrel(i), new Vector3(0f, y, (float)-1), Quaternion.identity));
+            var barrel = SelectBarrel(i);
+            Vector3 position;
+            if (barrel.CompareTag("EnemyLeft"))
+                position = new Vector3(-0.59f, y, (float)-1f);
+            else
+                position = new Vector3(0f, y, (float)-1f);
+
+            Barrels.Add(Instantiate(barrel, position, Quaternion.identity));
             y = y + 1.28f;
         }
     }
 
     private void AddNewBarrel()
     {
-        Barrels.Add(Instantiate(SelectBarrel(), new Vector3(0f, (Barrels.Count - 2) * 1.28f, (float)-1f), Quaternion.identity));
+        var barrel = SelectBarrel();
+        Vector3 position;
+
+        if (barrel.CompareTag("EnemyLeft"))
+            position = new Vector3(-0.59f, (Barrels.Count - 2) * 1.28f, (float)-1f);
+        else
+            position = new Vector3(0f, (Barrels.Count - 2) * 1.28f, (float)-1f);
+
+        Barrels.Add(Instantiate(barrel, position, Quaternion.identity));
     }
 
     private GameObject SelectBarrel(int index = -1)
