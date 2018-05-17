@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Characther : MonoBehaviour
 {
@@ -14,9 +15,11 @@ public class Characther : MonoBehaviour
     public GameObject Barrel;
     public GameObject BarrelEnemyRight;
     public GameObject BarrelEnemyLeft;
+    public Text LabelPoints;
 
     private List<GameObject> Barrels;
     private bool _lastIsAEnemy = false;
+    private int points = 0;
 
     // Use this for initialization
     void Start()
@@ -86,6 +89,12 @@ public class Characther : MonoBehaviour
         AddNewBarrel();
         if (CheckEnemy(Barrels[0]))
             Die();
+        else
+        {
+            points++;
+            LabelPoints.text = points.ToString();
+        }
+
     }
 
     private void InitiateBarrels()
