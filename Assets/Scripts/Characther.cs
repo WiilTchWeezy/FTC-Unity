@@ -11,11 +11,14 @@ public class Characther : MonoBehaviour
     public int Side { get; set; }
     SpriteRenderer Sprite;
     Animator Anim;
+    AudioSource Audio;
 
     public GameObject Barrel;
     public GameObject BarrelEnemyRight;
     public GameObject BarrelEnemyLeft;
     public Text LabelPoints;
+    public AudioClip HitSoft;
+    public AudioClip Success;
 
     private List<GameObject> Barrels;
     private bool _lastIsAEnemy = false;
@@ -26,8 +29,10 @@ public class Characther : MonoBehaviour
     {
         Sprite = GetComponentInChildren<SpriteRenderer>();
         Anim = GetComponentInChildren<Animator>();
+        Audio = GetComponentInChildren<AudioSource>();
         Barrels = new List<GameObject>();
         InitiateBarrels();
+        Audio.clip = HitSoft;
     }
 
     // Update is called once per frame
@@ -92,6 +97,24 @@ public class Characther : MonoBehaviour
         else
         {
             points++;
+            switch (points)
+            {
+                case 10:
+                    Audio.PlayOneShot(Success);
+                    break;
+                case 30:
+                    Audio.PlayOneShot(Success);
+                    break;
+                case 50:
+                    Audio.PlayOneShot(Success);
+                    break;
+                case 100:
+                    Audio.PlayOneShot(Success);
+                    break;
+                default:
+                    Audio.PlayOneShot(HitSoft);
+                    break;
+            }
             LabelPoints.text = points.ToString();
         }
 
