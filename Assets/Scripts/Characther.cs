@@ -19,10 +19,14 @@ public class Characther : MonoBehaviour
     public Text LabelPoints;
     public AudioClip HitSoft;
     public AudioClip Success;
+    public AudioClip BestScore;
+    public Slider slider;
 
     private List<GameObject> Barrels;
     private bool _lastIsAEnemy = false;
     private int points = 0;
+    private float lifeDownSpeed = 0.004f;
+    private int bestScore = 16;
 
     // Use this for initialization
     void Start()
@@ -33,6 +37,7 @@ public class Characther : MonoBehaviour
         Barrels = new List<GameObject>();
         InitiateBarrels();
         Audio.clip = HitSoft;
+        slider.value = 1f;
     }
 
     // Update is called once per frame
@@ -57,6 +62,7 @@ public class Characther : MonoBehaviour
         {
             Anim.SetFloat("Hitting", -1f);
         }
+        slider.value -= lifeDownSpeed;
     }
 
     public void GoLeft()
@@ -64,6 +70,8 @@ public class Characther : MonoBehaviour
         gameObject.transform.position = new Vector3((float)-1.31, (float)-2.597116, (float)-1);
         Sprite.flipX = false;
         Side = LEFT;
+        if (CheckEnemy(Barrels[0]))
+            Die();
     }
 
     public void GoRight()
@@ -71,11 +79,15 @@ public class Characther : MonoBehaviour
         gameObject.transform.position = new Vector3((float)1.31, (float)-2.597116, (float)-1);
         Sprite.flipX = true;
         Side = RIGHT;
+        if (CheckEnemy(Barrels[0]))
+            Die();
     }
 
     public void Hit(Touch touch)
     {
         Anim.SetFloat("Hitting", 1f);
+        if (CheckEnemy(Barrels[0]))
+            Die();
         if (touch.position.x < Screen.width / 2)
             GoLeft();
         else if (touch.position.x > Screen.width / 2)
@@ -85,6 +97,8 @@ public class Characther : MonoBehaviour
 
     public void Hit()
     {
+        if (CheckEnemy(Barrels[0]))
+            Die();
         Anim.SetFloat("Hitting", 1f);
         if (Input.mousePosition.x < Screen.width / 2)
             GoLeft();
@@ -97,23 +111,40 @@ public class Characther : MonoBehaviour
         else
         {
             points++;
+            slider.value += 0.2f;
             switch (points)
             {
                 case 10:
                     Audio.PlayOneShot(Success);
+                    lifeDownSpeed = 0.006f;
                     break;
                 case 30:
                     Audio.PlayOneShot(Success);
+                    lifeDownSpeed = 0.008f;
                     break;
                 case 50:
                     Audio.PlayOneShot(Success);
+                    lifeDownSpeed = 0.010f;
                     break;
                 case 100:
                     Audio.PlayOneShot(Success);
+                    lifeDownSpeed = 0.013f;
+                    break;
+                case 150:
+                    Audio.PlayOneShot(Success);
+                    lifeDownSpeed = 0.016f;
+                    break;
+                case 200:
+                    Audio.PlayOneShot(Success);
+                    lifeDownSpeed = 0.020f;
                     break;
                 default:
                     Audio.PlayOneShot(HitSoft);
                     break;
+            }
+            if (points == bestScore)
+            {
+                Audio.PlayOneShot(BestScore);
             }
             LabelPoints.text = points.ToString();
         }
@@ -224,5 +255,13 @@ public class Characther : MonoBehaviour
     private void Die()
     {
         SceneManager.LoadScene(0);
+    }
+
+    public void SliderChanged()
+    {
+        if (slider.value <= 0f)
+        {
+            Die();
+        }
     }
 }
