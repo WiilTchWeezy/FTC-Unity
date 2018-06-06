@@ -21,12 +21,14 @@ public class Characther : MonoBehaviour
     public AudioClip Success;
     public AudioClip BestScore;
     public Slider slider;
+    public GameObject Panel;
 
     private List<GameObject> Barrels;
     private bool _lastIsAEnemy = false;
     private int points = 0;
     private float lifeDownSpeed = 0.004f;
     private int bestScore = 16;
+    private bool isAlive;
 
     // Use this for initialization
     void Start()
@@ -38,31 +40,36 @@ public class Characther : MonoBehaviour
         InitiateBarrels();
         Audio.clip = HitSoft;
         slider.value = 1f;
+        Panel.SetActive(false);
+        isAlive = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Touch touch;
-        if (Input.touchCount > 0)
+        if (isAlive)
         {
-            touch = Input.GetTouch(0);
-            Hit(touch);
-        }
-        else
-        {
-            Anim.SetFloat("Hitting", -1f);
-        }
+            Touch touch;
+            if (Input.touchCount > 0)
+            {
+                touch = Input.GetTouch(0);
+                Hit(touch);
+            }
+            else
+            {
+                Anim.SetFloat("Hitting", -1f);
+            }
 
-        if (Input.GetButtonDown("Fire1"))
-        {
-            Hit();
+            if (Input.GetButtonDown("Fire1"))
+            {
+                Hit();
+            }
+            else
+            {
+                Anim.SetFloat("Hitting", -1f);
+            }
+            slider.value -= lifeDownSpeed;
         }
-        else
-        {
-            Anim.SetFloat("Hitting", -1f);
-        }
-        slider.value -= lifeDownSpeed;
     }
 
     public void GoLeft()
@@ -254,7 +261,9 @@ public class Characther : MonoBehaviour
 
     private void Die()
     {
-        SceneManager.LoadScene(0);
+        Panel.SetActive(true);
+        isAlive = false;
+        Anim.SetFloat("Hitting", -1f);
     }
 
     public void SliderChanged()
@@ -263,5 +272,10 @@ public class Characther : MonoBehaviour
         {
             Die();
         }
+    }
+
+    public void ReloadScene()
+    {
+        SceneManager.LoadScene(0);
     }
 }
