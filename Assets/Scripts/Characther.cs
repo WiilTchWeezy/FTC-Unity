@@ -17,6 +17,8 @@ public class Characther : MonoBehaviour
     public GameObject BarrelEnemyRight;
     public GameObject BarrelEnemyLeft;
     public Text LabelPoints;
+    public Text LabelPointsFinal;
+    public Text LabelBestScore;
     public AudioClip HitSoft;
     public AudioClip Success;
     public AudioClip BestScore;
@@ -29,6 +31,7 @@ public class Characther : MonoBehaviour
     private float lifeDownSpeed = 0.004f;
     private int bestScore = 16;
     private bool isAlive;
+    private int _bestScore = 0;
 
     // Use this for initialization
     void Start()
@@ -42,6 +45,7 @@ public class Characther : MonoBehaviour
         slider.value = 1f;
         Panel.SetActive(false);
         isAlive = true;
+        _bestScore = LoadGameBestScore();
     }
 
     // Update is called once per frame
@@ -312,9 +316,16 @@ public class Characther : MonoBehaviour
 
     private void Die()
     {
+        LabelPointsFinal.text = points.ToString();
         Panel.SetActive(true);
         isAlive = false;
         Anim.SetFloat("Hitting", -1f);
+        if (points > _bestScore)
+        {
+            _bestScore = points;
+            SaveGameBestScore(points);
+        }
+        LabelBestScore.text = _bestScore.ToString();
     }
 
     public void SliderChanged()
@@ -328,5 +339,17 @@ public class Characther : MonoBehaviour
     public void ReloadScene()
     {
         SceneManager.LoadScene(0);
+    }
+
+    private void SaveGameBestScore(int score)
+    {
+        PlayerPrefs.SetInt("bestScore", score);
+        PlayerPrefs.Save();
+    }
+
+    private int LoadGameBestScore()
+    {
+        int bestScore = 0;
+        return PlayerPrefs.GetInt("highscore", bestScore);
     }
 }
