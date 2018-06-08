@@ -52,22 +52,29 @@ public class Characther : MonoBehaviour
             Touch touch;
             if (Input.touchCount > 0)
             {
-                touch = Input.GetTouch(0);
-                Hit(touch);
+                for (int i = 0; i < Input.touchCount; i++)
+                {
+                    if (Input.GetTouch(i).phase == TouchPhase.Began)
+                    {
+                        touch = Input.GetTouch(i);
+                        Hit(touch);
+                    }
+                }
+                
             }
             else
             {
                 Anim.SetFloat("Hitting", -1f);
             }
 
-            if (Input.GetButtonDown("Fire1"))
-            {
-                Hit();
-            }
-            else
-            {
-                Anim.SetFloat("Hitting", -1f);
-            }
+            //if (Input.GetButtonDown("Fire1"))
+            //{
+            //    Hit();
+            //}
+            //else
+            //{
+            //    Anim.SetFloat("Hitting", -1f);
+            //}
             slider.value -= lifeDownSpeed;
         }
     }
@@ -92,14 +99,58 @@ public class Characther : MonoBehaviour
 
     public void Hit(Touch touch)
     {
-        Anim.SetFloat("Hitting", 1f);
         if (CheckEnemy(Barrels[0]))
             Die();
+        Anim.SetFloat("Hitting", 1f);
         if (touch.position.x < Screen.width / 2)
             GoLeft();
         else if (touch.position.x > Screen.width / 2)
             GoRight();
         AnimateBarrel();
+        AddNewBarrel();
+        if (CheckEnemy(Barrels[0]))
+            Die();
+        else
+        {
+            points++;
+            slider.value += 0.2f;
+            switch (points)
+            {
+                case 10:
+                    Audio.PlayOneShot(Success);
+                    lifeDownSpeed = 0.006f;
+                    break;
+                case 30:
+                    Audio.PlayOneShot(Success);
+                    lifeDownSpeed = 0.008f;
+                    break;
+                case 50:
+                    Audio.PlayOneShot(Success);
+                    lifeDownSpeed = 0.010f;
+                    break;
+                case 100:
+                    Audio.PlayOneShot(Success);
+                    lifeDownSpeed = 0.013f;
+                    break;
+                case 150:
+                    Audio.PlayOneShot(Success);
+                    lifeDownSpeed = 0.016f;
+                    break;
+                case 200:
+                    Audio.PlayOneShot(Success);
+                    lifeDownSpeed = 0.020f;
+                    break;
+                default:
+                    Audio.PlayOneShot(HitSoft);
+                    break;
+            }
+            if (points == bestScore)
+            {
+                Audio.PlayOneShot(BestScore);
+            }
+            LabelPoints.text = points.ToString();
+        }
+
     }
 
     public void Hit()
