@@ -1348,6 +1348,7 @@ MonoBehaviour:
   HitSoft: {fileID: 8300000, guid: 70a7bdb5290950145bd5d44e3759650d, type: 3}
   Success: {fileID: 8300000, guid: 14204ce27807c0a4bb5dd24420224a10, type: 3}
   BestScore: {fileID: 8300000, guid: 7ac462dffe1eee846835c68ccb173e2b, type: 3}
+  Fail: {fileID: 8300000, guid: 3a950805bc26ab245b242a8412a96028, type: 3}
   slider: {fileID: 217018007}
   Panel: {fileID: 539747924}
 --- !u!1 &1298546639

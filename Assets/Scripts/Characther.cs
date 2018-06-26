@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using GoogleMobileAds.Api;
+
 
 public class Characther : MonoBehaviour
 {
@@ -22,6 +24,7 @@ public class Characther : MonoBehaviour
     public AudioClip HitSoft;
     public AudioClip Success;
     public AudioClip BestScore;
+    public AudioClip Fail;
     public Slider slider;
     public GameObject Panel;
 
@@ -32,6 +35,8 @@ public class Characther : MonoBehaviour
     private int bestScore = 16;
     private bool isAlive;
     private int _bestScore = 0;
+    private BannerView bannerView;
+
 
     // Use this for initialization
     void Start()
@@ -45,7 +50,44 @@ public class Characther : MonoBehaviour
         slider.value = 1f;
         Panel.SetActive(false);
         isAlive = true;
+        InitPlayerPrefs();
         _bestScore = LoadGameBestScore();
+#if UNITY_ANDROID
+        string appId = "ca-app-pub-1586874665810792~8191328678";
+#elif UNITY_IPHONE
+            string appId = "ca-app-pub-3940256099942544~1458002511";
+#else
+            string appId = "unexpected_platform";
+#endif
+        MobileAds.Initialize(appId);
+        this.RequestBanner();
+
+    }
+
+    private void RequestBanner()
+    {
+#if UNITY_ANDROID
+        string adUnitId = "ca-app-pub-1586874665810792/1617702534";
+#elif UNITY_IPHONE
+            string adUnitId = "ca-app-pub-3940256099942544/2934735716";
+#else
+            string adUnitId = "unexpected_platform";
+#endif
+
+        // Create a 320x50 banner at the top of the screen.
+        bannerView = new BannerView(adUnitId, AdSize.Banner, AdPosition.Bottom);
+        AdRequest request = new AdRequest.Builder().Build();
+
+        // Load the banner with the request.
+        bannerView.LoadAd(request);
+    }
+
+    private void InitPlayerPrefs()
+    {
+        int bestScore = 0;
+        PlayerPrefs.GetInt("highscore", bestScore);
+        if (bestScore == 0)
+            PlayerPrefs.SetInt("highscore",0);
     }
 
     // Update is called once per frame
@@ -64,7 +106,7 @@ public class Characther : MonoBehaviour
                         Hit(touch);
                     }
                 }
-                
+
             }
             else
             {
@@ -316,14 +358,16 @@ public class Characther : MonoBehaviour
 
     private void Die()
     {
+        Audio.PlayOneShot(Fail);
         LabelPointsFinal.text = points.ToString();
         Panel.SetActive(true);
         isAlive = false;
         Anim.SetFloat("Hitting", -1f);
+        _bestScore = LoadGameBestScore();
         if (points > _bestScore)
         {
             _bestScore = points;
-            SaveGameBestScore(points);
+            SaveGameBestScore(_bestScore);
         }
         LabelBestScore.text = _bestScore.ToString();
     }
