@@ -84,10 +84,17 @@ public class Characther : MonoBehaviour
 
     private void InitPlayerPrefs()
     {
-        int bestScore = 0;
-        PlayerPrefs.GetInt("highscore", bestScore);
-        if (bestScore == 0)
-            PlayerPrefs.SetInt("highscore",0);
+        int score = -1;
+        score = PlayerPrefs.GetInt("bestScore", -1);
+        if (score == -1)
+        {
+            PlayerPrefs.SetInt("bestScore", 0);
+            PlayerPrefs.Save();
+        }
+        else
+        {
+            _bestScore = score;
+        }
     }
 
     // Update is called once per frame
@@ -246,7 +253,7 @@ public class Characther : MonoBehaviour
                     Audio.PlayOneShot(HitSoft);
                     break;
             }
-            if (points == bestScore)
+            if (points == _bestScore)
             {
                 Audio.PlayOneShot(BestScore);
             }
@@ -393,7 +400,8 @@ public class Characther : MonoBehaviour
 
     private int LoadGameBestScore()
     {
-        int bestScore = 0;
-        return PlayerPrefs.GetInt("highscore", bestScore);
+        int score = -1;
+        score = PlayerPrefs.GetInt("bestScore");
+        return score;
     }
 }
