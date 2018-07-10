@@ -59,8 +59,8 @@ public class Characther : MonoBehaviour
 #else
             string appId = "unexpected_platform";
 #endif
-        MobileAds.Initialize(appId);
-        this.RequestBanner();
+        //MobileAds.Initialize(appId);
+        //this.RequestBanner();
 
     }
 
@@ -197,7 +197,7 @@ public class Characther : MonoBehaviour
                     Audio.PlayOneShot(HitSoft);
                     break;
             }
-            if (points == bestScore)
+            if (points == _bestScore)
             {
                 Audio.PlayOneShot(BestScore);
             }
@@ -377,6 +377,7 @@ public class Characther : MonoBehaviour
             SaveGameBestScore(_bestScore);
         }
         LabelBestScore.text = _bestScore.ToString();
+        slider.value = 0;
     }
 
     public void SliderChanged()
@@ -401,7 +402,7 @@ public class Characther : MonoBehaviour
     private int LoadGameBestScore()
     {
         int score = -1;
-        score = PlayerPrefs.GetInt("bestScore");
-        return score;
+        score = PlayerPrefs.GetInt("bestScore", -1);
+        return score == -1 ? 0 : score;
     }
 }
