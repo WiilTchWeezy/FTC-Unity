@@ -32,7 +32,6 @@ public class Characther : MonoBehaviour
     private bool _lastIsAEnemy = false;
     private int points = 0;
     private float lifeDownSpeed = 0.004f;
-    private int bestScore = 16;
     private bool isAlive;
     private int _bestScore = 0;
     private BannerView bannerView;
@@ -52,6 +51,7 @@ public class Characther : MonoBehaviour
         isAlive = true;
         InitPlayerPrefs();
         _bestScore = LoadGameBestScore();
+        Audio.volume = 1f;
 #if UNITY_ANDROID
         string appId = "ca-app-pub-1586874665810792~8191328678";
 #elif UNITY_IPHONE
@@ -59,8 +59,8 @@ public class Characther : MonoBehaviour
 #else
             string appId = "unexpected_platform";
 #endif
-        //MobileAds.Initialize(appId);
-        //this.RequestBanner();
+        MobileAds.Initialize(appId);
+        this.RequestBanner();
 
     }
 
@@ -84,16 +84,18 @@ public class Characther : MonoBehaviour
 
     private void InitPlayerPrefs()
     {
-        int score = -1;
-        score = PlayerPrefs.GetInt("bestScore", -1);
-        if (score == -1)
+        if (PlayerPrefs.HasKey("bestScore") == false)
         {
             PlayerPrefs.SetInt("bestScore", 0);
             PlayerPrefs.Save();
         }
         else
         {
-            _bestScore = score;
+            if (PlayerPrefs.GetInt("bestScore") == 64)
+            {
+                PlayerPrefs.SetInt("bestScore", 0);
+                PlayerPrefs.Save();
+            }
         }
     }
 
@@ -206,61 +208,61 @@ public class Characther : MonoBehaviour
 
     }
 
-    public void Hit()
-    {
-        if (CheckEnemy(Barrels[0]))
-            Die();
-        Anim.SetFloat("Hitting", 1f);
-        if (Input.mousePosition.x < Screen.width / 2)
-            GoLeft();
-        else if (Input.mousePosition.x > Screen.width / 2)
-            GoRight();
-        AnimateBarrel();
-        AddNewBarrel();
-        if (CheckEnemy(Barrels[0]))
-            Die();
-        else
-        {
-            points++;
-            slider.value += 0.2f;
-            switch (points)
-            {
-                case 10:
-                    Audio.PlayOneShot(Success);
-                    lifeDownSpeed = 0.006f;
-                    break;
-                case 30:
-                    Audio.PlayOneShot(Success);
-                    lifeDownSpeed = 0.008f;
-                    break;
-                case 50:
-                    Audio.PlayOneShot(Success);
-                    lifeDownSpeed = 0.010f;
-                    break;
-                case 100:
-                    Audio.PlayOneShot(Success);
-                    lifeDownSpeed = 0.013f;
-                    break;
-                case 150:
-                    Audio.PlayOneShot(Success);
-                    lifeDownSpeed = 0.016f;
-                    break;
-                case 200:
-                    Audio.PlayOneShot(Success);
-                    lifeDownSpeed = 0.020f;
-                    break;
-                default:
-                    Audio.PlayOneShot(HitSoft);
-                    break;
-            }
-            if (points == _bestScore)
-            {
-                Audio.PlayOneShot(BestScore);
-            }
-            LabelPoints.text = points.ToString();
-        }
+    //public void Hit()
+    //{
+    //    if (CheckEnemy(Barrels[0]))
+    //        Die();
+    //    Anim.SetFloat("Hitting", 1f);
+    //    if (Input.mousePosition.x < Screen.width / 2)
+    //        GoLeft();
+    //    else if (Input.mousePosition.x > Screen.width / 2)
+    //        GoRight();
+    //    AnimateBarrel();
+    //    AddNewBarrel();
+    //    if (CheckEnemy(Barrels[0]))
+    //        Die();
+    //    else
+    //    {
+    //        points++;
+    //        slider.value += 0.2f;
+    //        switch (points)
+    //        {
+    //            case 10:
+    //                Audio.PlayOneShot(Success);
+    //                lifeDownSpeed = 0.006f;
+    //                break;
+    //            case 30:
+    //                Audio.PlayOneShot(Success);
+    //                lifeDownSpeed = 0.008f;
+    //                break;
+    //            case 50:
+    //                Audio.PlayOneShot(Success);
+    //                lifeDownSpeed = 0.010f;
+    //                break;
+    //            case 100:
+    //                Audio.PlayOneShot(Success);
+    //                lifeDownSpeed = 0.013f;
+    //                break;
+    //            case 150:
+    //                Audio.PlayOneShot(Success);
+    //                lifeDownSpeed = 0.016f;
+    //                break;
+    //            case 200:
+    //                Audio.PlayOneShot(Success);
+    //                lifeDownSpeed = 0.020f;
+    //                break;
+    //            default:
+    //                Audio.PlayOneShot(HitSoft);
+    //                break;
+    //        }
+    //        if (points == _bestScore)
+    //        {
+    //            Audio.PlayOneShot(BestScore);
+    //        }
+    //        LabelPoints.text = points.ToString();
+    //    }
 
-    }
+    //}
 
     private void InitiateBarrels()
     {
@@ -365,12 +367,14 @@ public class Characther : MonoBehaviour
 
     private void Die()
     {
+        Audio.volume = 0.5f;
         Audio.PlayOneShot(Fail);
+        if (points == 64)
+            points++;
         LabelPointsFinal.text = points.ToString();
         Panel.SetActive(true);
         isAlive = false;
         Anim.SetFloat("Hitting", -1f);
-        _bestScore = LoadGameBestScore();
         if (points > _bestScore)
         {
             _bestScore = points;
@@ -401,8 +405,9 @@ public class Characther : MonoBehaviour
 
     private int LoadGameBestScore()
     {
-        int score = -1;
-        score = PlayerPrefs.GetInt("bestScore", -1);
-        return score == -1 ? 0 : score;
+        if (PlayerPrefs.HasKey("bestScore"))
+            return PlayerPrefs.GetInt("bestScore", 0);
+        else
+            return 0;
     }
 }
