@@ -24,7 +24,7 @@ public class Barrel : MonoBehaviour
         {
             Debug.Log("AnimRight");
             Anim.SetBool("Right", true);
-            DestroyObj();
+            StartCoroutine(DestroyObj());
         }
     }
 
@@ -34,13 +34,13 @@ public class Barrel : MonoBehaviour
         {
             Debug.Log("AnimLeft");
             Anim.SetBool("Left", true);
-            DestroyObj();
+            StartCoroutine(DestroyObj());
         }
     }
 
     public IEnumerator DestroyObj()
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(2);
         Destroy(gameObject);
         Debug.Log("DestroyCalled");
     }
