@@ -18,6 +18,7 @@ public class Characther : MonoBehaviour
     public GameObject Barrel;
     public GameObject BarrelEnemyRight;
     public GameObject BarrelEnemyLeft;
+    public GameObject IceBarrel;
     public Text LabelPoints;
     public Text LabelPointsFinal;
     public Text LabelBestScore;
@@ -125,14 +126,14 @@ public class Characther : MonoBehaviour
                 Anim.SetFloat("Hitting", -1f);
             }
 
-            //if (Input.GetButtonDown("Fire1"))
-            //{
-            //    Hit();
-            //}
-            //else
-            //{
-            //    Anim.SetFloat("Hitting", -1f);
-            //}
+            if (Input.GetButtonDown("Fire1"))
+            {
+                Hit();
+            }
+            else
+            {
+                Anim.SetFloat("Hitting", -1f);
+            }
             slider.value -= lifeDownSpeed;
         }
     }
@@ -221,7 +222,6 @@ public class Characther : MonoBehaviour
         else if (Input.mousePosition.x > Screen.width / 2)
             GoRight();
         AnimateBarrel();
-        AddNewBarrel();
         if (CheckEnemy(Barrels[0]))
             Die();
         else
@@ -300,11 +300,11 @@ public class Characther : MonoBehaviour
     private GameObject SelectBarrel(int index = -1)
     {
         if (index == 0 || index == 1)
-            return Barrel;
+            return IceBarrel;
         if (_lastIsAEnemy)
         {
             _lastIsAEnemy = false;
-            return Barrel;
+            return IceBarrel;
         }
         var ramdomNumber = Random.Range(0, 4);
         GameObject barrel = null;
@@ -335,7 +335,8 @@ public class Characther : MonoBehaviour
                 _lastIsAEnemy = false;
                 break;
         }
-        return barrel;
+       // return barrel;
+        return IceBarrel;
     }
 
     private void AnimateBarrel()
@@ -343,18 +344,33 @@ public class Characther : MonoBehaviour
         if (Barrels.Count > 0)
         {
             var lastBarrel = Barrels[0];
-            var barrelScrpit = lastBarrel.GetComponentInChildren<Barrel>();
-            if (Side == RIGHT)
+            if (lastBarrel.CompareTag("IceBarrel"))
             {
-                barrelScrpit.AnimLeft();
+                var iceBarrelScrpit = lastBarrel.GetComponentInChildren<IceBarrel>();
+                if (iceBarrelScrpit.Hit(Side))
+                {
+                    Barrels.Remove(lastBarrel);
+                    foreach (var item in Barrels)
+                        item.transform.position = new Vector3(item.transform.position.x, item.transform.position.y - 1.28f);
+                    AddNewBarrel();
+                }
             }
-            else if (Side == LEFT)
-            {
-                barrelScrpit.AnimRight();
+            else {
+                var barrelScrpit = lastBarrel.GetComponentInChildren<Barrel>();
+                if (Side == RIGHT)
+                {
+                    barrelScrpit.AnimLeft();
+                }
+                else if (Side == LEFT)
+                {
+                    barrelScrpit.AnimRight();
+                }
+                Barrels.Remove(lastBarrel);
+                foreach (var item in Barrels)
+                    item.transform.position = new Vector3(item.transform.position.x, item.transform.position.y - 1.28f);
+
+                AddNewBarrel();
             }
-            Barrels.Remove(lastBarrel);
-            foreach (var item in Barrels)
-                item.transform.position = new Vector3(item.transform.position.x, item.transform.position.y - 1.28f);
         }
     }
 

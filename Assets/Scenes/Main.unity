@@ -1538,6 +1538,7 @@ MonoBehaviour:
     type: 2}
   BarrelEnemyLeft: {fileID: 1456510852539684, guid: 5cd79173d473e0c4d934ceabfd487778,
     type: 2}
+  IceBarrel: {fileID: 1293772261917534, guid: 0459d03c80892af40a32b24b8e93ebf1, type: 2}
   LabelPoints: {fileID: 190102711}
   LabelPointsFinal: {fileID: 56257098}
   LabelBestScore: {fileID: 587777161}
