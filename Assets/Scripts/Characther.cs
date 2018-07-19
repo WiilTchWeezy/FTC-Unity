@@ -26,6 +26,8 @@ public class Characther : MonoBehaviour
     public AudioClip Success;
     public AudioClip BestScore;
     public AudioClip Fail;
+    public AudioClip IceHit;
+    public AudioClip IceBreak;
     public Slider slider;
     public GameObject Panel;
     public Button ButtonSound;
@@ -165,8 +167,7 @@ public class Characther : MonoBehaviour
             GoLeft();
         else if (touch.position.x > Screen.width / 2)
             GoRight();
-        AnimateBarrel();
-        AddNewBarrel();
+        var barrel = AnimateBarrel();
         if (CheckEnemy(Barrels[0]))
             Die();
         else
@@ -200,7 +201,28 @@ public class Characther : MonoBehaviour
                     lifeDownSpeed = 0.020f;
                     break;
                 default:
-                    Audio.PlayOneShot(HitSoft);
+                    if (barrel != null)
+                    {
+                        if (barrel.CompareTag("IceBarrel"))
+                        {
+                            var iceBarrelScript = barrel.GetComponent<IceBarrel>();
+                            if (iceBarrelScript.IceIsBreaked())
+                            {
+                                Audio.PlayOneShot(IceBreak);
+                                StartCoroutine(FrozeLife());
+                            }
+                            else if (iceBarrelScript.HaveNoIce())
+                                Audio.PlayOneShot(HitSoft);
+                            else
+                                Audio.PlayOneShot(IceHit);
+                        }
+                        else
+                            Audio.PlayOneShot(HitSoft);
+                    }
+                    else
+                    {
+                        Audio.PlayOneShot(HitSoft);
+                    }
                     break;
             }
             if (points == _bestScore)
@@ -221,7 +243,7 @@ public class Characther : MonoBehaviour
             GoLeft();
         else if (Input.mousePosition.x > Screen.width / 2)
             GoRight();
-        AnimateBarrel();
+        var barrel = AnimateBarrel();
         if (CheckEnemy(Barrels[0]))
             Die();
         else
@@ -255,7 +277,28 @@ public class Characther : MonoBehaviour
                     lifeDownSpeed = 0.020f;
                     break;
                 default:
-                    Audio.PlayOneShot(HitSoft);
+                    if (barrel != null)
+                    {
+                        if (barrel.CompareTag("IceBarrel"))
+                        {
+                            var iceBarrelScript = barrel.GetComponent<IceBarrel>();
+                            if (iceBarrelScript.IceIsBreaked())
+                            {
+                                Audio.PlayOneShot(IceBreak);
+                                StartCoroutine(FrozeLife());
+                            }
+                            else if (iceBarrelScript.HaveNoIce())
+                                Audio.PlayOneShot(HitSoft);
+                            else
+                                Audio.PlayOneShot(IceHit);
+                        }
+                        else
+                            Audio.PlayOneShot(HitSoft);
+                    }
+                    else
+                    {
+                        Audio.PlayOneShot(HitSoft);
+                    }
                     break;
             }
             if (points == _bestScore)
@@ -300,11 +343,11 @@ public class Characther : MonoBehaviour
     private GameObject SelectBarrel(int index = -1)
     {
         if (index == 0 || index == 1)
-            return IceBarrel;
+            return Barrel;
         if (_lastIsAEnemy)
         {
             _lastIsAEnemy = false;
-            return IceBarrel;
+            return Barrel;
         }
         var ramdomNumber = Random.Range(0, 4);
         GameObject barrel = null;
@@ -335,11 +378,19 @@ public class Characther : MonoBehaviour
                 _lastIsAEnemy = false;
                 break;
         }
-       // return barrel;
+
+        if (points > 50 && points < 100)
+        {
+            var luckyNumber = Random.Range(0, 15);
+            if (luckyNumber == 8 || luckyNumber == 9)
+                barrel = IceBarrel;
+        }
+
         return IceBarrel;
+        return barrel;
     }
 
-    private void AnimateBarrel()
+    private GameObject AnimateBarrel()
     {
         if (Barrels.Count > 0)
         {
@@ -355,7 +406,8 @@ public class Characther : MonoBehaviour
                     AddNewBarrel();
                 }
             }
-            else {
+            else
+            {
                 var barrelScrpit = lastBarrel.GetComponentInChildren<Barrel>();
                 if (Side == RIGHT)
                 {
@@ -371,7 +423,9 @@ public class Characther : MonoBehaviour
 
                 AddNewBarrel();
             }
+            return lastBarrel;
         }
+        return null;
     }
 
     private bool CheckEnemy(GameObject gameObject)
@@ -406,7 +460,7 @@ public class Characther : MonoBehaviour
     {
         if (slider.value <= 0f)
         {
-            Die();
+            //Die();
         }
     }
 
@@ -484,5 +538,12 @@ public class Characther : MonoBehaviour
             Audio.volume = 0f;
             ButtonSound.image.sprite = SoundOff;
         }
+    }
+
+    private IEnumerator FrozeLife()
+    {
+        lifeDownSpeed = 0;
+        yield return new WaitForSeconds(2);
+        lifeDownSpeed = 0.006f;
     }
 }

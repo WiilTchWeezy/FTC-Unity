@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 114279448339893394}
   m_Layer: 0
   m_Name: IceBarrel
-  m_TagString: Untagged
+  m_TagString: IceBarrel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -36,6 +36,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4016210756491006}
   - component: {fileID: 212109078074028210}
+  - component: {fileID: 95654965233591276}
   m_Layer: 0
   m_Name: IceBarrelSprite
   m_TagString: Untagged
@@ -63,13 +64,30 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1293772261917534}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.120000005, y: -2.58, z: -10.002674}
+  m_LocalPosition: {x: -0.120000005, y: -2.58, z: -0.00267415}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4016210756491006}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &95654965233591276
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1578507374071640}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4efb88ca28cbea94daaccd7d8f609541, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!114 &114279448339893394
 MonoBehaviour:
   m_ObjectHideFlags: 1

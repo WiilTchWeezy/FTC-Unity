@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IceBarrel : Barrel
+public class IceBarrel : MonoBehaviour
 {
-
-    Animator Anim = null;
-
     public Sprite IceBrokeSprite;
     public Sprite BarrelSprite;
 
@@ -14,10 +11,12 @@ public class IceBarrel : Barrel
     private bool _isLastHit = false;
 
     private SpriteRenderer _spriteRenderer;
+    private Animator _anim;
     // Use this for initialization
     void Start()
     {
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        _anim = GetComponentInChildren<Animator>();
     }
 
     // Update is called once per frame
@@ -41,14 +40,52 @@ public class IceBarrel : Barrel
                 break;
             case 3:
                 if (direction == 1)
-                    AnimRight();
-                else
                     AnimLeft();
+                else
+                    AnimRight();
                 _isLastHit = true;
                 break;
             default:
                 break;
         }
         return _isLastHit;
+    }
+
+    public void AnimRight()
+    {
+        if (_anim.gameObject.activeSelf)
+        {
+            Debug.Log("AnimRight");
+            _anim.SetBool("Right", true);
+            StartCoroutine(DestroyObj());
+        }
+    }
+
+    public void AnimLeft()
+    {
+        if (_anim.gameObject.activeSelf)
+        {
+            Debug.Log("AnimLeft");
+            _anim.SetBool("Left", true);
+            StartCoroutine(DestroyObj());
+        }
+    }
+
+    public IEnumerator DestroyObj()
+    {
+        yield return new WaitForSeconds(2);
+        Destroy(gameObject);
+        Debug.Log("DestroyCalled");
+    }
+
+    public bool IceIsBreaked()
+    {
+        return hit == 2;
+    }
+
+
+    public bool HaveNoIce()
+    {
+        return hit == 3;
     }
 }
