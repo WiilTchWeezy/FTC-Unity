@@ -36,6 +36,7 @@ public class Characther : MonoBehaviour
 
     private List<GameObject> Barrels;
     private bool _lastIsAEnemy = false;
+    private bool _lastIsIce = false;
     private int points = 0;
     private float lifeDownSpeed = 0.004f;
     private bool isAlive;
@@ -172,32 +173,38 @@ public class Characther : MonoBehaviour
             Die();
         else
         {
-            points++;
-            slider.value += 0.2f;
+            var pointsAdded = AddPoints(barrel);
+            AddLifePoints(barrel);
             switch (points)
             {
                 case 10:
-                    Audio.PlayOneShot(Success);
+                    if (pointsAdded)
+                        Audio.PlayOneShot(Success);
                     lifeDownSpeed = 0.006f;
                     break;
                 case 30:
-                    Audio.PlayOneShot(Success);
+                    if (pointsAdded)
+                        Audio.PlayOneShot(Success);
                     lifeDownSpeed = 0.008f;
                     break;
                 case 50:
-                    Audio.PlayOneShot(Success);
+                    if (pointsAdded)
+                        Audio.PlayOneShot(Success);
                     lifeDownSpeed = 0.010f;
                     break;
                 case 100:
-                    Audio.PlayOneShot(Success);
+                    if (pointsAdded)
+                        Audio.PlayOneShot(Success);
                     lifeDownSpeed = 0.013f;
                     break;
                 case 150:
-                    Audio.PlayOneShot(Success);
+                    if (pointsAdded)
+                        Audio.PlayOneShot(Success);
                     lifeDownSpeed = 0.016f;
                     break;
                 case 200:
-                    Audio.PlayOneShot(Success);
+                    if (pointsAdded)
+                        Audio.PlayOneShot(Success);
                     lifeDownSpeed = 0.020f;
                     break;
                 default:
@@ -217,11 +224,15 @@ public class Characther : MonoBehaviour
                                 Audio.PlayOneShot(IceHit);
                         }
                         else
-                            Audio.PlayOneShot(HitSoft);
+                        {
+                            if (pointsAdded)
+                                Audio.PlayOneShot(HitSoft);
+                        }
                     }
                     else
                     {
-                        Audio.PlayOneShot(HitSoft);
+                        if (pointsAdded)
+                            Audio.PlayOneShot(HitSoft);
                     }
                     break;
             }
@@ -248,33 +259,44 @@ public class Characther : MonoBehaviour
             Die();
         else
         {
-            points++;
-            slider.value += 0.2f;
+            var pointsAdded = AddPoints(barrel);
+            AddLifePoints(barrel);
             switch (points)
             {
                 case 10:
-                    Audio.PlayOneShot(Success);
+                    if (pointsAdded)
+                        Audio.PlayOneShot(Success);
                     lifeDownSpeed = 0.006f;
                     break;
                 case 30:
-                    Audio.PlayOneShot(Success);
+                    if (pointsAdded)
+                        Audio.PlayOneShot(Success);
                     lifeDownSpeed = 0.008f;
                     break;
                 case 50:
-                    Audio.PlayOneShot(Success);
+                    if (pointsAdded)
+                        Audio.PlayOneShot(Success);
                     lifeDownSpeed = 0.010f;
                     break;
                 case 100:
-                    Audio.PlayOneShot(Success);
+                    if (pointsAdded)
+                        Audio.PlayOneShot(Success);
                     lifeDownSpeed = 0.013f;
                     break;
                 case 150:
-                    Audio.PlayOneShot(Success);
+                    if (pointsAdded)
+                        Audio.PlayOneShot(Success);
                     lifeDownSpeed = 0.016f;
                     break;
                 case 200:
-                    Audio.PlayOneShot(Success);
+                    if (pointsAdded)
+                        Audio.PlayOneShot(Success);
                     lifeDownSpeed = 0.020f;
+                    break;
+                case 500:
+                    if (pointsAdded)
+                        Audio.PlayOneShot(Success);
+                    lifeDownSpeed = 0.025f;
                     break;
                 default:
                     if (barrel != null)
@@ -293,11 +315,15 @@ public class Characther : MonoBehaviour
                                 Audio.PlayOneShot(IceHit);
                         }
                         else
-                            Audio.PlayOneShot(HitSoft);
+                        {
+                            if (pointsAdded)
+                                Audio.PlayOneShot(HitSoft);
+                        }
                     }
                     else
                     {
-                        Audio.PlayOneShot(HitSoft);
+                        if (pointsAdded)
+                            Audio.PlayOneShot(HitSoft);
                     }
                     break;
             }
@@ -308,6 +334,40 @@ public class Characther : MonoBehaviour
             LabelPoints.text = points.ToString();
         }
 
+    }
+
+    private void AddLifePoints(GameObject barrel)
+    {
+        if (barrel != null)
+        {
+            var sliderAnim = slider.GetComponent<Animator>();
+            if (sliderAnim.GetBool("IsFrozed") == false)
+                slider.value += 0.2f;
+        }
+    }
+
+    private bool AddPoints(GameObject barrel)
+    {
+        if (barrel != null)
+        {
+            if (barrel.CompareTag("IceBarrel"))
+            {
+                var iceBarrelScript = barrel.GetComponent<IceBarrel>();
+                if (iceBarrelScript.HaveNoIce())
+                {
+                    points++;
+                    return true;
+                }
+                else
+                    return false;
+            }
+            else
+            {
+                points++;
+                return true;
+            }
+        }
+        return false;
     }
 
     private void InitiateBarrels()
@@ -381,12 +441,58 @@ public class Characther : MonoBehaviour
 
         if (points > 50 && points < 100)
         {
-            var luckyNumber = Random.Range(0, 15);
-            if (luckyNumber == 8 || luckyNumber == 9)
+            var luckyNumber = Random.Range(0, 20);
+            if (luckyNumber == 8 && _lastIsIce == false)
+            {
                 barrel = IceBarrel;
+                _lastIsIce = true;
+            }
+            else
+            {
+                _lastIsIce = false;
+            }
+        }
+        if (points > 100 && points < 150)
+        {
+            var luckyNumber = Random.Range(0, 20);
+            if (luckyNumber == 8 && _lastIsIce == false)
+            {
+                barrel = IceBarrel;
+                _lastIsIce = true;
+            }
+            else
+            {
+                _lastIsIce = false;
+            }
         }
 
-        return IceBarrel;
+        if (points > 250 && points < 300)
+        {
+            var luckyNumber = Random.Range(0, 20);
+            if (luckyNumber == 8 && _lastIsIce == false)
+            {
+                barrel = IceBarrel;
+                _lastIsIce = true;
+            }
+            else
+            {
+                _lastIsIce = false;
+            }
+        }
+        if (points > 500)
+        {
+            var luckyNumber = Random.Range(0, 50);
+            if (luckyNumber == 8 && _lastIsIce == false)
+            {
+                barrel = IceBarrel;
+                _lastIsIce = true;
+            }
+            else
+            {
+                _lastIsIce = false;
+            }
+        }
+
         return barrel;
     }
 
@@ -460,7 +566,7 @@ public class Characther : MonoBehaviour
     {
         if (slider.value <= 0f)
         {
-            //Die();
+            Die();
         }
     }
 
@@ -543,7 +649,10 @@ public class Characther : MonoBehaviour
     private IEnumerator FrozeLife()
     {
         lifeDownSpeed = 0;
+        var anim = slider.GetComponent<Animator>();
+        anim.SetBool("IsFrozed", true);
         yield return new WaitForSeconds(2);
+        anim.SetBool("IsFrozed", false);
         lifeDownSpeed = 0.006f;
     }
 }
