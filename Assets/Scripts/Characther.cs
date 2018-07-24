@@ -129,14 +129,14 @@ public class Characther : MonoBehaviour
                 Anim.SetFloat("Hitting", -1f);
             }
 
-            if (Input.GetButtonDown("Fire1"))
-            {
-                Hit();
-            }
-            else
-            {
-                Anim.SetFloat("Hitting", -1f);
-            }
+            //if (Input.GetButtonDown("Fire1"))
+            //{
+            //    Hit();
+            //}
+            //else
+            //{
+            //    Anim.SetFloat("Hitting", -1f);
+            //}
             slider.value -= lifeDownSpeed;
         }
     }
@@ -340,9 +340,7 @@ public class Characther : MonoBehaviour
     {
         if (barrel != null)
         {
-            var sliderAnim = slider.GetComponent<Animator>();
-            if (sliderAnim.GetBool("IsFrozed") == false)
-                slider.value += 0.2f;
+            slider.value += 0.2f;
         }
     }
 
@@ -454,7 +452,7 @@ public class Characther : MonoBehaviour
         }
         if (points > 100 && points < 150)
         {
-            var luckyNumber = Random.Range(0, 20);
+            var luckyNumber = Random.Range(0, 30);
             if (luckyNumber == 8 && _lastIsIce == false)
             {
                 barrel = IceBarrel;
@@ -468,7 +466,7 @@ public class Characther : MonoBehaviour
 
         if (points > 250 && points < 300)
         {
-            var luckyNumber = Random.Range(0, 20);
+            var luckyNumber = Random.Range(0, 40);
             if (luckyNumber == 8 && _lastIsIce == false)
             {
                 barrel = IceBarrel;
@@ -481,7 +479,7 @@ public class Characther : MonoBehaviour
         }
         if (points > 500)
         {
-            var luckyNumber = Random.Range(0, 50);
+            var luckyNumber = Random.Range(0, 60);
             if (luckyNumber == 8 && _lastIsIce == false)
             {
                 barrel = IceBarrel;
@@ -572,7 +570,7 @@ public class Characther : MonoBehaviour
 
     public void ReloadScene()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
     }
 
     private void SaveGameBestScore(int score)
@@ -651,8 +649,24 @@ public class Characther : MonoBehaviour
         lifeDownSpeed = 0;
         var anim = slider.GetComponent<Animator>();
         anim.SetBool("IsFrozed", true);
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(3);
         anim.SetBool("IsFrozed", false);
-        lifeDownSpeed = 0.006f;
+        if (points < 10)
+            lifeDownSpeed = 0.006f;
+        else if (points >= 30)
+            lifeDownSpeed = 0.008f;
+        else if (points >= 50)
+            lifeDownSpeed = 0.010f;
+        else if (points >= 100)
+            lifeDownSpeed = 0.013f;
+        else if (points >= 150)
+            lifeDownSpeed = 0.016f;
+        else if (points >= 200)
+            lifeDownSpeed = 0.020f;
+        else if (points >= 500)
+            lifeDownSpeed = 0.025f;
+        else
+            lifeDownSpeed = 0.006f;
+
     }
 }
