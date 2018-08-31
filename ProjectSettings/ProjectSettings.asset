@@ -691,7 +691,7 @@ PlayerSettings:
       daydreamIconBackground: {fileID: 0}
   cloudServicesEnabled:
     UNet: 1
-  facebookSdkVersion: pluginIncompatible
+  facebookSdkVersion: plugin
   apiCompatibilityLevel: 2
   cloudProjectId: 77f9530b-123b-40f7-9aef-846f4ee8bc8f
   projectName: Fighter Tower Challenge
